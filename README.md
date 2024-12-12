@@ -62,3 +62,12 @@ Now create your database with this command line
 ```bash
   php bin/console doctrine:database:create
 ```
+
+Then you need to migrate
+
+```bash
+  php bin/console make:migration
+```
+```bash
+  php bin/console doctrine:migrations:migrate
+```
