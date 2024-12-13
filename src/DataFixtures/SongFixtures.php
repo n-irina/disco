@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Composer;
 use App\Entity\Singer;
 use App\Entity\Song;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -12,7 +13,7 @@ class SongFixtures extends Fixture implements DependentFixtureInterface
 {
     public const SONG_REFERENCES = [
 
-        "If I were a boy",
+        "Irreplaceable",
         "Confessions",
         "With you",
         "Let me love you"
@@ -35,34 +36,70 @@ class SongFixtures extends Fixture implements DependentFixtureInterface
         "Get down like that (remix)"
     ];
 
+    public const BEYONCE_SONG_REFERENCES = [
+
+        "I'm that girl",
+        "Cozy",
+        "Alien Superstar",
+        "Cuff it",
+        "Energy",
+        "Break my soul",
+        "Church girl",
+        "Plastic off the sofa",
+        "Virgo's groove",
+        "Move",
+        "Heated",
+        "Thique",
+        "All up in your mind",
+        "America has a problem",
+        "Pure/Honey",
+        "Summer renaissance"
+    ];
+
     public function load(ObjectManager $manager): void
     {
 
         $songs = [
 
             [
-               "title" => "If I were a boy",
+               "title" => "Irreplaceable",
                "date" => "2009",
-               "duration" => "05:06",
-               "singer_index" => 0
+               "duration" => "04:13",
+               "singer_index" => 0,
+               "composer_index" => [
+                  0,
+                  1
+               ]
             ],
             [
                 "title" => "Confessions (part II)",
                 "date" => "2004",
                 "duration" => "04:51",
-                "singer_index" => 2
+                "singer_index" => 2,
+                "composer_index" => [
+                    3,
+                    5,
+                    6
+                 ]
             ],
             [
                 "title" => "With you",
                 "date" => "2007",
                 "duration" => "04:16",
-                "singer_index" => 3
+                "singer_index" => 3,
+                "composer_index" => [
+                    2,
+                    4
+                 ]
             ],
             [
                 "title" => "Let me love you",
                 "date" => "2004",
                 "duration" => "04:27",
-                "singer_index" => 4
+                "singer_index" => 4,
+                "composer_index" => [
+                    1
+                 ]
             ],
 
         ];
@@ -137,6 +174,91 @@ class SongFixtures extends Fixture implements DependentFixtureInterface
 
         ];
 
+        $beyonce_songs = [
+
+            [
+               "title" => "I'm that girl",
+               "date" => "2022",
+               "duration" => "03:28",
+            ],
+            [
+                "title" => "Cozy",
+                "date" => "2022",
+                "duration" => "03:30",           
+            ],
+            [
+                "title" => "Alien Superstar",
+                "date" => "2022",
+                "duration" => "03:35",            
+            ],
+            [
+                "title" => "Cuff it",
+                "date" => "2022",
+                "duration" => "03:45",            
+            ],
+            [
+                "title" => "Energy",
+                "date" => "2022",
+                "duration" => "01:56",             
+            ],
+            [
+                "title" => "Break my soul",
+                "date" => "2022",
+                "duration" => "04:38",
+            ],
+            [
+                 "title" => "Church girl",
+                 "date" => "2022",
+                 "duration" => "03:44",           
+            ],
+            [
+                 "title" => "Plastic off the sofa",
+                 "date" => "2022",
+                 "duration" => "04:14",            
+            ],
+            [
+                 "title" => "Virgo's groove",
+                 "date" => "2022",
+                 "duration" => "06:08",            
+            ],
+            [
+                 "title" => "Move",
+                 "date" => "2022",
+                 "duration" => "03:23",             
+            ],
+            [
+                "title" => "Heated",
+                "date" => "2022",
+                "duration" => "04:20",
+            ],
+            [
+                 "title" => "Thique",
+                 "date" => "2022",
+                 "duration" => "04:04",           
+            ],
+            [
+                 "title" => "All up in your mind",
+                 "date" => "2022",
+                 "duration" => "02:49",            
+            ],
+            [
+                "title" => "America has a problem",
+                "date" => "2022",
+                "duration" => "03:18",
+            ],
+            [
+                 "title" => "Pure/Honey",
+                 "date" => "2022",
+                 "duration" => "04:48",           
+            ],
+            [
+                 "title" => "Summer renaissance",
+                 "date" => "2022",
+                 "duration" => "04:34",            
+            ],
+
+        ];
+
         foreach($songs as $index => $one_song){
 
             $song = new Song();
@@ -146,6 +268,13 @@ class SongFixtures extends Fixture implements DependentFixtureInterface
             $song->setDuration($time);
             $singer_reference = $this->getReference(SingerFixtures::SINGER_REFERENCES[$one_song["singer_index"]], Singer::class);
             $song->addSinger($singer_reference);
+
+            foreach($one_song["composer_index"] as $composer_index){
+
+                $composer_reference = $this->getReference(ComposerFixtures::COMPOSER_REFERENCES[$composer_index], Composer::class);
+                $song->addComposer($composer_reference);
+
+            }
 
             $manager->persist($song);
 
@@ -169,6 +298,22 @@ class SongFixtures extends Fixture implements DependentFixtureInterface
 
         }
 
+        foreach($beyonce_songs as $index => $one_song){
+
+            $song = new Song();
+            $song->setTitle($one_song["title"]);
+            $song->setDate($one_song["date"]);
+            $time = \DateTime::createFromFormat("H:i:s", "00:".$one_song["duration"]);
+            $song->setDuration($time);
+            $singer_reference = $this->getReference(SingerFixtures::SINGER_REFERENCES[0], Singer::class);
+            $song->addSinger($singer_reference);
+
+            $manager->persist($song);
+
+            $this->addReference(self::BEYONCE_SONG_REFERENCES[$index], $song);
+
+        }
+
         $manager->flush();
 
     }
@@ -177,6 +322,7 @@ class SongFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             SingerFixtures::class,
+            ComposerFixtures::class,
         ];
     }
 }

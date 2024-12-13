@@ -42,6 +42,12 @@ class Singer
     #[ORM\ManyToMany(targetEntity: Album::class, inversedBy: 'singers')]
     private Collection $album;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $picture_path = null;
+
+    #[ORM\ManyToOne(inversedBy: 'singers')]
+    private ?Composer $composer = null;
+
     public function __construct()
     {
         $this->song = new ArrayCollection();
@@ -145,6 +151,30 @@ class Singer
     public function removeAlbum(Album $album): static
     {
         $this->album->removeElement($album);
+
+        return $this;
+    }
+
+    public function getPicturePath(): ?string
+    {
+        return $this->picture_path;
+    }
+
+    public function setPicturePath(?string $picture_path): static
+    {
+        $this->picture_path = $picture_path;
+
+        return $this;
+    }
+
+    public function getComposer(): ?Composer
+    {
+        return $this->composer;
+    }
+
+    public function setComposer(?Composer $composer): static
+    {
+        $this->composer = $composer;
 
         return $this;
     }

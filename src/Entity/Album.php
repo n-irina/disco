@@ -35,6 +35,9 @@ class Album
     #[ORM\ManyToMany(targetEntity: Singer::class, mappedBy: 'album')]
     private Collection $singers;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $picture_path = null;
+
     public function __construct()
     {
         $this->song = new ArrayCollection();
@@ -117,6 +120,18 @@ class Album
         if ($this->singers->removeElement($singer)) {
             $singer->removeAlbum($this);
         }
+
+        return $this;
+    }
+
+    public function getPicturePath(): ?string
+    {
+        return $this->picture_path;
+    }
+
+    public function setPicturePath(?string $picture_path): static
+    {
+        $this->picture_path = $picture_path;
 
         return $this;
     }

@@ -26,9 +26,16 @@ class Composer
     #[ORM\ManyToMany(targetEntity: Song::class, inversedBy: 'composers')]
     private Collection $song;
 
+    /**
+     * @var Collection<int, Singer>
+     */
+    #[ORM\OneToMany(targetEntity: Singer::class, mappedBy: 'composer')]
+    private Collection $singers;
+
     public function __construct()
     {
         $this->song = new ArrayCollection();
+        $this->singers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,6 +75,36 @@ class Composer
     public function removeSong(Song $song): static
     {
         $this->song->removeElement($song);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Singer>
+     */
+    public function getSingers(): Collection
+    {
+        return $this->singers;
+    }
+
+    public function addSinger(Singer $singer): static
+    {
+        if (!$this->singers->contains($singer)) {
+            $this->singers->add($singer);
+            $singer->setComposer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSinger(Singer $singer): static
+    {
+        if ($this->singers->removeElement($singer)) {
+            // set the owning side to null (unless already changed)
+            if ($singer->getComposer() === $this) {
+                $singer->setComposer(null);
+            }
+        }
 
         return $this;
     }

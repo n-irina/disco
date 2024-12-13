@@ -16,6 +16,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
+            ComposerFixtures::class,
             SingerFixtures::class,
             SongFixtures::class,  
             AlbumFixtures::class,          

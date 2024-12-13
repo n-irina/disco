@@ -30,6 +30,24 @@ class AlbumFixtures extends Fixture implements DependentFixtureInterface
         }
 
         $manager->persist($neyo_album);
+
+        $beyonce_songs_references = SongFixtures::BEYONCE_SONG_REFERENCES; 
+        
+        $beyonce_album = new Album();
+        $beyonce_album->setTitle("Renaissance");
+        $beyonce_album->setYearOfRelease(2022);
+        $beyonce_singer = $this->getReference(SingerFixtures::SINGER_REFERENCES[0], Singer::class);
+        $beyonce_album->addSinger($beyonce_singer);
+
+        foreach($beyonce_songs_references as $beyonce_song_reference){
+
+            $song = $this->getReference($beyonce_song_reference, Song::class);
+            $beyonce_album->addSong($song);
+
+        }
+
+        $manager->persist($beyonce_album);
+
         $manager->flush();
     }
 
